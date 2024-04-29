@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies</title>
     <link rel="icon" type="image/png" href="/static/favicon.ico" />
     <link href="static/css/site.css" type="text/css" rel="stylesheet" />
@@ -23,13 +24,13 @@
             <a class="nav-link" id="welcome-msg">Welcome, email</a>
           </li>
           <li class="nav-item user">
-            <a class="nav-link" href="#">Logout</a>
+            <a class="nav-link" href="/logout">Logout</a>
           </li>
           <li class="nav-item guest">
-            <a class="nav-link" href="#">Login</a>
+            <a class="nav-link" href="/login">Login</a>
           </li>
           <li class="nav-item guest">
-            <a class="nav-link" href="#">Register</a>
+            <a class="nav-link" href="/register">Register</a>
           </li>
         </ul>
       </nav>
@@ -55,7 +56,7 @@
         <h1 class="text-center">Movies</h1>
 
         <section id="add-movie-button" class="user">
-          <a href="#" class="btn btn-warning">Add Movie</a>
+          <a href="/create" class="btn btn-warning">Add Movie</a>
         </section>
 
         <section id="movie">
@@ -156,7 +157,7 @@
           <div class="form-group">
             <label for="title">Movie Title</label>
             <input
-              id="title"
+              id="edit-title"
               type="text"
               class="form-control"
               placeholder="Movie Title"
@@ -175,7 +176,7 @@
           <div class="form-group">
             <label for="imageUrl">Image url</label>
             <input
-              id="imageUrl"
+              id="edit-imageUrl"
               type="text"
               class="form-control"
               placeholder="Image Url"
@@ -197,7 +198,7 @@
           <div class="form-group">
             <label for="email">Email</label>
             <input
-              id="email"
+              id="login-email"
               type="email"
               class="form-control"
               placeholder="Email"
@@ -208,7 +209,7 @@
           <div class="form-group">
             <label for="password">Password</label>
             <input
-              id="password"
+              id="login-password"
               type="password"
               class="form-control"
               placeholder="Password"
