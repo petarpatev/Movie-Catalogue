@@ -6,6 +6,21 @@ import { showAddMoviePage } from "./pages/createMovie.js";
 const navigationElement = document.querySelector('.container nav');
 navigationElement.addEventListener('click', onNavigate);
 
+//  Guest/User Nav
+export function nav() {
+    let guestNavElements = navigationElement.querySelectorAll('.nav-item.guest');
+    let userNavElements = navigationElement.querySelectorAll('.nav-item.user');
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (user) {
+        guestNavElements.forEach(x => x.style.display = 'none');
+        userNavElements.forEach(x => x.style.display = 'block');
+    } else {
+        guestNavElements.forEach(x => x.style.display = 'block');
+        userNavElements.forEach(x => x.style.display = 'none');
+    }
+}
+
 const addMovieBtn = document.querySelector('#add-movie-button .btn.btn-warning');
 addMovieBtn.addEventListener('click', onNavigate);
 
@@ -39,9 +54,12 @@ function onNavigate(e) {
 }
 
 //Logout
+const welcomeElement = document.querySelector('#welcome-msg');
 function logout() {
+    localStorage.removeItem('user');
     alert('Logged out!');
-    showHomePage();
+    welcomeElement.textContent = `Welcome, guest`;
+    showLoginPage();
 }
 
 //Start the app with Home page
