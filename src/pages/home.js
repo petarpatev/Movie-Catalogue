@@ -1,4 +1,5 @@
 import { showView } from "../app.js";
+import { showDetailsMoviePage } from "./detailsMovie.js";
 
 const homeView = document.querySelector('#home-page');
 export function showHomePage() {
@@ -7,6 +8,13 @@ export function showHomePage() {
 }
 
 const moviesContainerElement = homeView.querySelector('#movies-list');
+
+moviesContainerElement.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (e.target.tagName == 'BUTTON') {
+        showDetailsMoviePage(e.target.dataset.id);
+    }
+})
 
 function getMovies() {
     const url = 'http://localhost:3030/data/movies';
@@ -26,11 +34,11 @@ function createMovieCard(movie) {
     <img class="card-img-top"  src=${movie.img} alt="Card image cap" width="400"/>
         <div class="card-body">
         <h4 class="card-title">${movie.title}</h4>
-        <a href="#">
-        </a>
         </div>
         <div class="card-footer">
-        <button type="button" class="btn btn-info">Details</button>
+        <a href="/details/${movie._id}">
+        <button data-id=${movie._id} type="button" class="btn btn-info">Details</button>
+        </a>
         </div>`;
 
     return movieContainer;
