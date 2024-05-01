@@ -7,17 +7,20 @@ const navigationElement = document.querySelector('.container nav');
 navigationElement.addEventListener('click', onNavigate);
 
 //  Guest/User Nav
-export function nav() {
-    let guestNavElements = navigationElement.querySelectorAll('.nav-item.guest');
-    let userNavElements = navigationElement.querySelectorAll('.nav-item.user');
+export function updateNav() {
+    let guestNavElements = document.querySelectorAll('.guest');
+    let userNavElements = document.querySelectorAll('.user');
+    const welcomeElement = document.querySelector('#welcome-msg');
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (user) {
         guestNavElements.forEach(x => x.style.display = 'none');
         userNavElements.forEach(x => x.style.display = 'block');
+        welcomeElement.textContent = `Welcome, ${user.email}`;
     } else {
         guestNavElements.forEach(x => x.style.display = 'block');
         userNavElements.forEach(x => x.style.display = 'none');
+        welcomeElement.textContent = 'Welcome, guest';
     }
 }
 
@@ -54,14 +57,14 @@ function onNavigate(e) {
 }
 
 //Logout
-const welcomeElement = document.querySelector('#welcome-msg');
 function logout() {
     localStorage.removeItem('user');
     alert('Logged out!');
-    welcomeElement.textContent = `Welcome, guest`;
+    updateNav();
     showLoginPage();
 }
 
 //Start the app with Home page
+updateNav();
 showHomePage();
 

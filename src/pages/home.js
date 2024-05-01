@@ -1,11 +1,9 @@
 import { showView } from "../app.js";
-import { nav } from "../app.js";
 
 const homeView = document.querySelector('#home-page');
 export function showHomePage() {
-    showView(homeView);
-    nav();
     getMovies();
+    showView(homeView);
 }
 
 const moviesContainerElement = homeView.querySelector('#movies-list');
