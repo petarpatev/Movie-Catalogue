@@ -1,5 +1,6 @@
 import { showView } from "../app.js";
 import { showHomePage } from "./home.js";
+import { showEditMoviePage } from "./editMovie.js";
 
 const detailsMovieView = document.querySelector('#movie-example');
 export function showDetailsMoviePage(id) {
@@ -67,6 +68,10 @@ function showButtons(movie) {
   })
   const editBtn = document.querySelector('.edit');
   editBtn.style.display = 'none';
+  editBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    showEditMoviePage(movie, user);
+  })
   const likeBtn = document.querySelector('.like');
   // likeBtn.style.display = 'none';
 
