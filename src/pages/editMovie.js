@@ -33,10 +33,9 @@ function editMovie(movie, user) {
             })
         })
             .then(response => response.json())
-            .then(movie => console.log(movie))
+            .then(movie => showDetailsMoviePage(movie._id))
             .catch(err => console.log(err))
         
-        showDetailsMoviePage(movie._id);
     })
 }
 

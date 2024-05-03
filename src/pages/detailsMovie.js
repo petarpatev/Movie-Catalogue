@@ -4,22 +4,11 @@ import { showEditMoviePage } from "./editMovie.js";
 
 const detailsMovieView = document.querySelector('#movie-example');
 export function showDetailsMoviePage(id) {
-  getMovie(id);
-  showView(detailsMovieView)
+  displayMovie(id);
+  showView(detailsMovieView);
 }
 
-function getMovie(id) {
-  const url = `http://localhost:3030/data/movies/${id}`;
-  fetch(url)
-    .then(response => response.json())
-    .then(movie => {
-      detailsMovieView.replaceChildren(createMovieCard(movie));
-      showButtons(movie);
-    })
-    .catch(err => console.log(err))
-}
-
-function createMovieCard(movie) {
+function createMovieCard(movie, likes) {
   const movieContainer = document.createElement('div');
   movieContainer.className = 'container';
   movieContainer.innerHTML = `
@@ -41,7 +30,7 @@ function createMovieCard(movie) {
               <a class="btn btn-danger delete" href="#">Delete</a>
               <a class="btn btn-warning edit" href="#">Edit</a>
               <a class="btn btn-primary like" href="#">Like</a>
-              <span class="enrolled-span">Liked 1</span>
+              <span class="enrolled-span">Liked ${likes}</span>
             </div>
           </div>`
 
@@ -49,7 +38,11 @@ function createMovieCard(movie) {
   return movieContainer;
 }
 
-function showButtons(movie) {
+function showButtons(movie, isliked) {
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isOwner = user && user._id == movie._ownerId;
+
   const deleteBtn = document.querySelector('.delete');
   deleteBtn.style.display = 'none';
   deleteBtn.addEventListener('click', (e) => {
@@ -66,21 +59,70 @@ function showButtons(movie) {
       .catch(err => console.log(err))
     showHomePage();
   })
+
   const editBtn = document.querySelector('.edit');
   editBtn.style.display = 'none';
   editBtn.addEventListener('click', (e) => {
     e.preventDefault();
     showEditMoviePage(movie, user);
   })
-  const likeBtn = document.querySelector('.like');
-  // likeBtn.style.display = 'none';
 
-  const user = JSON.parse(localStorage.getItem('user'));
-  const isOwner = user && user._id == movie._ownerId;
-  console.log(user, movie, isOwner)
+  const likeBtn = document.querySelector('.like');
+  likeBtn.style.display = 'none';
+  likeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    fetch(`http://localhost:3030/data/likes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-authorization': user.accessToken,
+      },
+      body: JSON.stringify({ 'movieId': movie._id })
+    })
+      .then(response => response.json())
+      .then(like => {
+        showDetailsMoviePage(movie._id);
+      })
+      .catch(err => console.log(err))
+  })
 
   if (user && isOwner) {
     deleteBtn.style.display = 'inline-block';
     editBtn.style.display = 'inline-block';
+  } else if (user && !isOwner && !isliked) {
+    likeBtn.style.display = 'inline-block';
   }
+}
+
+async function displayMovie(id) {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [movie, likes, ownLike] = await Promise.all([getMovie(id), getLikes(id), isliked(id, user)]);
+
+  detailsMovieView.replaceChildren(createMovieCard(movie, likes));
+
+  showButtons(movie, ownLike);
+}
+
+async function getMovie(id) {
+  const response = await fetch(`http://localhost:3030/data/movies/${id}`);
+  const movie = await response.json();
+
+  return movie;
+}
+
+async function getLikes(id) {
+  const response = await fetch(`http://localhost:3030/data/likes?where=movieId%3D%22${id}%22&distinct=_ownerId&count`);
+  const likes = await response.json();
+
+  return likes;
+}
+
+async function isliked(id, user) {
+  if(!user) {
+    return false;
+  }
+  const response = await fetch(`http://localhost:3030/data/likes?where=movieId%3D%22${id}%22%20and%20_ownerId%3D%22${user._id}%22`);
+  const like = await response.json();
+
+  return like.length > 0;
 }
